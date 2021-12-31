@@ -1,0 +1,293 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.area {
+    border: 1px solid #333;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: block;
+    overflow: hidden;
+}
+
+.x-header {
+    height: 50px;
+    padding: 10px;
+}
+
+.x-container {
+}
+
+.content {
+    width: 500px;
+    margin: 0 auto;
+
+    padding-top: 60px;
+}
+
+.lang-selection {
+    float: right;
+}
+
+.x-select {
+    width: 120px;
+    border: 1px solid #575757;
+    position: relative;
+    padding: 5px;
+}
+
+.select-lang {
+    width: 100%;
+    border: 0;
+    color: #575757;
+    outline: none;
+}
+
+.arrow-wrap {
+    right: 0;
+    top: 0;
+    width: 20px;
+    height: 100%;
+    position: absolute;
+    background-color: white;
+    padding-top: 5px;
+}
+
+.arrow-wrap i { 
+    color: #575757;
+}
+
+.brand-logo {
+    text-align: center;
+}
+
+.brand-logo .brand-image {
+    width: 300px;
+} 
+
+.login-form-wrap {
+    padding-top: 70px;
+}
+
+.login-form .tab-content {
+    padding-bottom: 30px;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    border-bottom: 1px solid grey;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.login-form .tab-menu {
+    list-style: none;
+    display: flex;
+    border-bottom: 1px solid grey;
+    padding: 0;
+    margin: 0;
+}
+
+.login-form .tab-menu .tab-item {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 15px;
+}
+
+.login-form .tab-menu .tab-item.active {
+
+    border: 1px solid grey;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 2px solid white;
+    margin-bottom: -1px;
+}
+
+.login-form .input-info {
+    padding: 30px;
+}
+
+.login-form .input-info .info-wrap {
+    border: 1px solid grey;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.login-form .input-info .input-border {
+    border-bottom: 1px solid grey;
+}
+
+.login-form .input-info:focus-within .input-border {
+    border-bottom: 1px solid #03c75a;
+}
+
+.login-form .input-info .info-wrap:focus-within {
+    border-color: #03c75a;
+}
+
+.login-form .input-info .account-wrap {
+    border-bottom: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.login-form .input-info .password-wrap {
+    border-top: 0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.login-form .input-info .input-user {
+    flex: 1 1 auto;
+    outline: none;
+    border: 0;
+    margin: 0 10px;
+}
+
+.login-form .input-info .input-user.account {
+}
+
+.login-form .input-info .input-user.password {
+}
+
+.login-form .input-info .btn-delete-text { 
+    flex: 0 0 20px;
+    height: 20px;
+    border: 0;
+    background-color: transparent;
+}
+
+.login-form .input-info .input-icon {
+    flex: 0 0 auto;
+    color: #949494;
+}
+
+.login-form .input-info .info-wrap:focus-within .input-icon {
+    color: #03c75a;
+}
+
+.login-form .input-info .delete-icon {
+    display: none;
+    color: #949494;
+}
+
+.login-form .input-info .info-wrap:focus-within .delete-icon {
+    display: block;
+}
+
+
+.options {
+    display: flex;
+    padding: 0 30px;
+}
+.options .auto-login {
+    flex: 1 1 50%;
+}
+.options > div > * {
+    cursor: pointer;
+}
+.options .auto-login .checkbox{
+    font-size: 18px;
+}
+.options .auto-login .far.checkbox{
+    color: grey;
+}
+.options .auto-login .fas.checkbox{
+    color: #03c75a;
+}
+.options .ip-secure {
+    flex: 1 1 50%;
+    text-align: right;
+}
+
+.options .ip-secure > span > * {
+    vertical-align: middle;
+}
+
+.ios-switch {
+    display: inline-block;
+    position: relative;
+    width: 46px;
+    height: 24px;
+}
+
+.ios-switch .switch-bar {
+    left: 0;
+    top: 0;
+    position: absolute;
+    background-color: #c5c0c0;
+    border-radius: 15px;
+    width: 100%;
+    height: 100%;
+}
+
+.ios-switch.on .switch-bar {
+    background-color: #03c75a;
+}
+
+.ios-switch .switch-ball {
+    left: 2px;
+    top: 2px;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: left 0.15s;
+}
+
+.ios-switch.on .switch-ball {
+    left: 24px;
+}
+
+.submit {
+    padding: 15px 30px 0;
+}
+
+.submit .btn-login {
+    width: 100%;
+    height: 50px;
+    background-color: #03c75a;
+    border-radius: 5px;
+    border: 0;
+    color: white;
+}
+
+.user-menu {
+    margin-top: 30px;
+}
+
+.user-menu .menu-group {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+}
+
+.user-menu .menu-group .menu-item {
+    flex: 0 0 auto;
+    padding: 0 15px;
+    position: relative;
+    color: grey;
+}
+
+.user-menu .menu-group .menu-item.vbar::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 0;
+    width: 1px;
+    height: 12px;
+    border-radius: .5px;
+    background-color: #dadada;
+}
+
+@media screen and (max-width: 600px) {
+    .content {
+        width: 100%;
+    }
+}

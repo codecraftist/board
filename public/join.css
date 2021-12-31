@@ -1,0 +1,214 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+.hidden{
+    display: none;
+}
+
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: block;
+    overflow: hidden;
+}
+
+.x-header {
+    height: 50px;
+    padding: 10px;
+}
+
+.x-container {
+}
+
+.content {
+    width: 500px;
+    margin: 0 auto;
+
+    padding-top: 60px;
+}
+
+
+
+
+.brand-logo {
+    text-align: center;
+}
+
+.brand-logo .brand-image {
+    width: 300px;
+} 
+
+.join-form-wrap {
+    padding-top: 70px;
+}
+
+.join-form .tab-content {
+    height: 480px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+#btn-email-confirm{
+    color: #949494;
+    background-color: white;
+    width: 40px;
+    height: 30px;
+    border: 1px solid #949494;
+    border-radius: 5px;
+}
+
+#btn-email-ok{
+    color: #949494;
+    background-color: white;
+    width: 40px;
+    height: 30px;
+    border: 1px solid #949494;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.join-form .tab-content .tab-emailconfirm {
+    margin-left: 30px;
+    margin-top: 15px;
+}
+.join-form .tab-content .tab-emailok {
+    margin-left: 30px;
+    margin-top: 15px;
+}
+
+.join-form .confirm-email{
+    display: flex;
+
+}
+
+.join-form .confirm-email .timer{
+    flex: 1 1 auto;
+    margin-left: 20px;
+    vertical-align: baseline;
+    align-items: center;
+    color: red;
+}
+
+.join-form .join-email #input-user-email{
+    flex: 0 1 auto;
+    margin-left: 30px;
+    margin-top: 2px;
+    margin-right: 10px;
+}
+
+
+#btn-email-confirm{
+    outline: none;
+    background-color: white;
+    margin-left: 0;
+}
+
+
+
+.join-form #input-user-emailpwd{
+    flex: 0 1 auto;
+    margin-left: 30px;
+    margin-top: 2px;
+    margin-right: 10px;
+}
+.join-form .input-info {
+    padding: 30px;
+}
+
+.join-form .input-info .info-wrap {
+    border: 1px solid grey;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.join-form .input-info .input-border {
+    border-bottom: 1px solid grey;
+}
+
+.join-form .input-info .input-info:focus-within .input-border {
+    border-bottom: 1px solid 03c72d;
+}
+
+.join-form .input-info .info-wrap:focus-within {
+    border-color: 03c72d;
+}
+
+.join-form .input-info .account-wrap {
+    border-bottom: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.join-form .input-info .password-wrap {
+    border-top: 0;
+    
+}
+
+.join-form .input-info .password-wrapCopy {  
+    border-top: 0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;  
+}
+
+.join-form .input-info .input-user {
+    flex: 1 1 auto;
+    outline: none;
+    border: 0;
+    margin: 0 10px;
+}
+
+.join-form .input-info #input-user-account {
+    width: 70%;
+}
+
+.join-form .input-info .btn-secondary{
+    color: #949494;
+    background-color: white;
+    width: 40px;
+    height: 30px;
+    border: 1px solid #949494;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.join-form .input-info .btn-delete-text { 
+    flex: 0 0 20px;
+    height: 20px;
+    border: 0;
+    background-color: transparent;
+}
+
+
+
+.join-form .input-info .delete-icon {
+    display: none;
+    color: #949494;
+}
+
+.join-form .input-info .info-wrap:focus-within .delete-icon {
+    display: block;
+}
+
+
+.submit{
+    padding: 15px 30px 0;
+}
+.submit .btn-join{
+    width: 100%;
+    height: 50px;
+    background-color: #03c72d;
+    border-radius: 5px;
+    border: 0;
+    color: white;
+}
+
+
+
+@media screen and (max-width: 600px) {
+    .content {
+        width: 100%;
+    }
+}

@@ -1,0 +1,191 @@
+
+.container {
+}
+
+.text-bold {
+    font-weight: bold;
+}
+.spacer {
+    flex: 1 1 auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: block;
+}
+
+.space-top-100 {
+    padding-top: 100px;   
+}
+
+.space-top-80 {
+    padding-top: 80px;   
+}
+
+.space-top-60 {
+    padding-top: 60px;   
+}
+
+.space-top-40 {
+    padding-top: 40px;   
+}
+
+.space-top-20 {
+    padding-top: 20px;   
+}
+
+.search-box > * {
+    height: 38px;
+    border-radius: 0;
+    border: 1px solid rgb(175, 175, 175);
+}
+
+.search-box .search-type {
+    width: 100px;
+    text-align: center;
+}
+
+.search-box .search-keyword {
+    width: 200px;
+}
+.search-box .search-go {
+    width: 60px;
+    background-color: #ec4920;
+    color: white;
+    border-color: #ec4920;
+}
+
+.search-box {
+    float: right;
+}
+
+.search-box > * {
+    float: left;
+}
+
+.search-box > .search-keyword {
+    border-left: 0;
+    border-right: 0;
+}
+
+.actions .btn {
+    border-radius: 0;
+}
+
+.post .post-row {
+    display: flex;
+}
+
+.post .post-row.bordered .post-column {
+    border: 1px solid #d0d0d0;
+    border-bottom: 0;
+}
+
+.post .post-row.bordered .post-column.left-border-none {
+    border-left: 0;
+}
+
+.post .post-row.last-row {
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.post .post-row .post-column.half {
+    flex: 1 1 50%;
+}
+
+.post .post-row .post-column.label {
+    flex: 0 0 150px;
+    text-align: center;
+    padding: 10px;
+    line-height: 40px;
+    vertical-align: middle;
+}
+
+.post .post-row .post-column.content {
+    flex: 1 1 auto;
+    padding: 10px;
+}
+
+.post .post-row .post-column .post-input {
+    border: 1px solid #d0d0d0;
+    width: 100%;
+    height: 40px;
+}
+
+.file-list {
+    display: inline-block;
+    width: 300px;
+    height: 200px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    vertical-align: bottom;
+}
+
+.post-file {
+    display: inline-block;
+    width: 78px;
+    vertical-align: bottom;
+}
+
+.post-option > * {
+    line-height: 40px;
+}
+
+.post-option .option-item {
+}
+
+.post-option .option-name {
+    margin: 0 5px;;
+}
+
+.post-reader {
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 30px;
+}
+.post-reader .post-info {
+    display: flex;
+    align-items: flex-end;
+}
+.post-reader .post-author {
+    font-size: 22px;
+    font-weight: bold;
+}
+.post-reader .post-date {
+    margin-left: 10px;
+    color: grey;
+}
+.post-reader .post-viewcnt {
+
+}
+.post-reader .post-content {
+    min-height: 400px;
+}
+.post-reader .post-stat {
+    text-align: center;
+}
+.post-reader .post-stat button {
+    width: 120px;
+    height: 50px;
+    color: white;
+    border: 0;
+}
+.post-reader .post-stat button.good {
+    background-color: rgb(36 112 251);
+}
+.post-reader .post-stat button.bad {
+    background-color: rgb(255 55 111);
+}
+
+#post-list .post-title {
+    cursor: pointer;
+}
+
+.post-action {
+    text-align: right;
+}
