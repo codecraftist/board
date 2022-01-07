@@ -470,4 +470,141 @@ router.get('/board', function (req, res, next) {
 
 });
 
+router.get('/board', async function (req, res, next) {
+
+  try {
+
+    const _page = parseInt(req.query.page || 1);
+    const _limit = parseInt(req.query.limit || 20);
+
+    if (isNaN(_page) || isNaN(_limit)) {
+      return res.json({
+        success: false,
+        msg: '요청 정보가 올바르지 않습니다.'
+      })
+    }
+
+    const _keyword = req.query.keyword || '';
+    const _searchType = req.query.searchType || '';
+
+    const prePostList = await mdb.getAllData('board');
+    const preNoticeList = await mdb.getAllData('notice');
+
+    const normalList = [];
+
+    let skip = (_page - 1) * _limit;
+    let cnt = 0;
+
+    if (typeof _keyword == 'string' && _keyword.length > 2) {
+
+      let i = 0;
+      while (i < prePostList.length) {
+        if (prePostList[i][_searchType].includes(_keyword)) {
+          if (skip > 0) {
+            skip--;
+          } else if (cnt < _limit) {
+            normalList.push(prePostList[i]);
+            cnt++;
+          } else {
+            break;
+          }
+        }
+        i++;
+      }
+    } else {
+      let i = 0;
+      while (i < prePostList.length) {
+        if (prePostList[i][_searchType].includes(_keyword)) {
+          if (skip > 0) {
+            skip--;
+          } else if (cnt < _limit) {
+            normalList.push(prePostList[i]);
+            cnt++;
+          } else {
+            break;
+          }
+        }
+        i++;
+      }
+    }
+
+    res.json({
+      success: true,
+      page: _page,
+      limit: _limit,
+      postList: normalList,
+      noticeList: preNoticeList,
+    });
+
+  } catch (err) {
+
+    return res.json({
+      success: false,
+      msg: '서버 내부 오류 발생'
+    });
+  }
+});
+
+router.post('/board/add', async function (req, res, next) {
+
+  console.log(req.body);
+
+  try {
+
+    let no = 1000;
+
+    const getNoOp = await mdb.getData('no', 'board');
+    if(getNoOp) {
+      no = getNoOP + 1;
+    }
+
+    await mdb.setData('no', 'board', no);
+    
+    const post = {
+      no: no,
+      author: req.session.uid,
+      title: req.body.title,
+      category: req.body.category,
+      content: req.body.content,
+      blind: req.body.blind == 'true' ? true : false,
+      notice: req.body.notice == 'true' ? true : false,
+      viewCnt: 0,
+      good: 0,
+      bad: 0,
+      datetime: Date.now()
+    }
+
+    if(post.notice) {
+      const addOp = await mdb.setData('notice', no, post);
+      if(!addOp) {
+        return res.json({
+          success: false,
+          msg: '게시글 생성에 실패하였습니다.'
+        });
+      }
+    } else {
+      const addOp = await mdb.setData('board', no, post);
+      if(!addOp) {
+        return res.json({
+          success: false,
+          msg: '게시글 생성에 실패하였습니다.'
+        });
+      }
+    }
+    
+    res.json({
+      success: true,
+      post: post
+    });
+
+  } catch(err) {
+
+    return res.json({
+      success: false,
+      msg: '서버 내부 오류 발생'
+    });
+  }
+
+});
+
 module.exports = router;

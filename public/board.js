@@ -168,126 +168,108 @@ $(document).ready(function () {
     });
 
     function RefreshPostList() {
-        $('#post-list').empty();
-        var postList = localStorage.getItem('postList');
-        if (postList == null) {
-            return;
-        }
 
-        var prePostList = JSON.parse(postList);
+        // 글번호 작성자 조회수 등등
 
-        // prePostList.sort(function (a, b) {
-        //     if(a.notice && !b.notice) {
-        //         return -1;
-        //     } else if(!a.notice && b.notice) {
-        //         return 1;
-        //     } else {
-        //         return b.no - a.no;
-        //     }
-        // });
-
-        var noticeList = [];
-        var normalList = [];
-
-        for (var i = 0; i < prePostList.length; i++) {
-            if (prePostList[i].notice) {
-                noticeList.push(prePostList[i]);
-            } else {
-                normalList.push(prePostList[i]);
+        $.ajax({
+            method: 'GET',
+            url: '/board/list',
+            data: {
+                page: _page,
+                limit: _limit,
+                keyword: _keyword, // 있으면 보내주고 없으면 빈문자열
+                searchType: _searchType,
             }
-        }
+        }).done(function (response) {
+            console.log(response);
 
-        if (typeof _keyword == 'string' && _keyword.length > 2) {
+            response = {
+                success: true,
+                page: 3,
+                limit: 30,
+                noticeList: [],
+                normalList: []
+            }
 
-            // // 만약 searchType 변수의 값이 "title"이라면 
-            // for(var i = 0; i < prePostList.length; i++) {
-            //     if(!prePostList[i][searchType].includes(keyword)) {
-            //         prePostList[i].pass = true;
-            //     }
-            // }
+            response = {
+                success: false,
+                msg: '로그인이 필요합니다.'
+            }
 
-            var i = 0;
-            while (i < normalList.length) {
-                if (!normalList[i][_searchType].includes(_keyword)) {
-                    normalList.splice(i, 1);
+            $('#post-list').empty();
+
+            
+            for (var i = 0; i < noticeList.length; i++) {
+
+                var post = noticeList[i];  // 전체 배열에서 i번째 포스트 1개의 데이터를 post라는 변수에 저장한다.
+                // 내 정보(nick)와 게시글의 작성자 정보가 일치(동일)하는가?\
+    
+                var postTag;
+    
+                var tagHead = `<tr class="text-center ">
+                                    <td  class="text-danger">${post.no}</td>`;
+                var tagTail = `<td>${post.datetime}</td>
+                                    <td>${post.viewCnt}</td>
+                                </tr>`;
+    
+                if (post.blind == true) {
+    
+                    if (me.nick == post.author) { // true(참), false(거짓)
+    
+                        postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
+    
+                    } else {
+    
+                        postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
+                    }
+    
                 } else {
-                    i++;
+    
+                    postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
                 }
+    
+                $('#post-list').append(tagHead + postTag + tagTail);
             }
-
-            _page = 1;
-        }
-
-        // normalList에 화면에 보여져야하는 글만 남게된다.
-
-        for (var i = 0; i < noticeList.length; i++) {
-
-            var post = noticeList[i];  // 전체 배열에서 i번째 포스트 1개의 데이터를 post라는 변수에 저장한다.
-            // 내 정보(nick)와 게시글의 작성자 정보가 일치(동일)하는가?\
-
-            var postTag;
-
-            var tagHead = `<tr class="text-center ">
-                                <td  class="text-danger">${post.no}</td>`;
-            var tagTail = `<td>${post.datetime}</td>
-                                <td>${post.viewCnt}</td>
-                            </tr>`;
-
-            if (post.blind == true) {
-
-                if (me.nick == post.author) { // true(참), false(거짓)
-
-                    postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-
+    
+            var skip = (_page - 1) * _limit;
+    
+            for (var i = skip; (i < normalList.length) && (i < skip + _limit); i++) {
+    
+                var post = normalList[i];  // 전체 배열에서 i번째 포스트 1개의 데이터를 post라는 변수에 저장한다.
+                // 내 정보(nick)와 게시글의 작성자 정보가 일치(동일)하는가?\
+    
+                var postTag;
+    
+                var tagHead = `<tr class="text-center ">
+                                    <td  class="text-danger">${post.no}</td>`;
+                var tagTail = `<td>${post.datetime}</td>
+                                    <td>${post.viewCnt}</td>
+                                </tr>`;
+    
+                if (post.blind == true) {
+    
+                    if (me.nick == post.author) { // true(참), false(거짓)
+    
+                        postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
+    
+                    } else {
+    
+                        postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
+                    }
                 } else {
-
-                    postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
+    
+                    postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
                 }
-
-            } else {
-
-                postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
+    
+                $('#post-list').append(tagHead + postTag + tagTail);
             }
+    
+            // ㅍㅔ이지 버튼
+    
+            SetPageButton(normalList);
 
-            $('#post-list').append(tagHead + postTag + tagTail);
-        }
-
-        var skip = (_page - 1) * _limit;
-
-        for (var i = skip; (i < normalList.length) && (i < skip + _limit); i++) {
-
-            var post = normalList[i];  // 전체 배열에서 i번째 포스트 1개의 데이터를 post라는 변수에 저장한다.
-            // 내 정보(nick)와 게시글의 작성자 정보가 일치(동일)하는가?\
-
-            var postTag;
-
-            var tagHead = `<tr class="text-center ">
-                                <td  class="text-danger">${post.no}</td>`;
-            var tagTail = `<td>${post.datetime}</td>
-                                <td>${post.viewCnt}</td>
-                            </tr>`;
-
-            if (post.blind == true) {
-
-                if (me.nick == post.author) { // true(참), false(거짓)
-
-                    postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-
-                } else {
-
-                    postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
-                }
-            } else {
-
-                postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-            }
-
-            $('#post-list').append(tagHead + postTag + tagTail);
-        }
-
-        // ㅍㅔ이지 버튼
-
-        SetPageButton(normalList);
+        });
+        
     }
 
     $('#summernote').summernote({
@@ -310,9 +292,6 @@ $(document).ready(function () {
         var title = $('#input-post-title').val();
         var category = $('#select-post-category').val();
 
-        var author = $('#input-post-author').val();
-        var secret = $('#input-post-secret').val();
-
         var content = $('#summernote').summernote('code');
 
         var blind = $('#cb-post-blind').prop('checked');
@@ -328,75 +307,50 @@ $(document).ready(function () {
 
             var no = $('#post-editor').attr('no');
 
-            var postList = localStorage.getItem('postList');
-            if (postList == null || postList.length == 0) {
-                return alert('해당 글이 존재하지 않습니다. 새로고침 후에 다시 시도해주세요.');
-            }
+            //GET(서버에서 데이터 요청) POST(먼가 새로 추가하거나 어떤 기능이 필요할때) PUT(수정할때, 변경 같은 게 일어날 때) DELETE(먼가 정보를 삭제 하고 싶을때)
 
-            var postListArr = JSON.parse(postList);
-
-            var find = false;
-            for (var i = 0; i < postListArr.length; i++) {
-
-                if (no == postListArr[i].no) { // find
-                    find = true;
-                    postListArr[i].title = title;
-                    postListArr[i].category = category;
-                    postListArr[i].content = content;
-                    postListArr[i].blind = blind;
-                    postListArr[i].notice = notice;
-
-                    if (secret == postListArr[i].secret) {
-
-                        var postListStr = JSON.stringify(postListArr);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
-                        localStorage.setItem('postList', postListStr);
-
-                        return alert('수정되었습니다.');
-
-                    } else {
-
-                        return alert('비밀번호가 일치하지 않습니다.');
-                    }
+            $.ajax({
+                method: 'PUT',
+                url: '/board/modify',
+                data: {
+                    no: no,
+                    title: title,
+                    category: category,
+                    content: content,
+                    blind: blind,
+                    notice: notice,
                 }
-            }
-
-            alert('글이 이미 삭제되었거나 수정할 수 없습니다.');
+            }).done(function (response) {
+                console.log(response);
+                if(response.success == true) {
+                    alert('수정되었습니다.');
+                    $('#post-editor').addClass('hidden');
+                } else {
+                    alert('글 수정에 실패했습니다.');
+                }
+            });
 
         } else {
 
-            var fullData = {
-                'title': title,
-                'category': category,
-                'author': author,
-                'secret': secret,
-                'content': content,
-                'blind': blind,
-                'notice': notice,
-                'datetime': GetCurrentDateTime(),
-                'viewCnt': 0,
-                'good': 0,
-                'bad': 0,
-            };
-
-            var postList = localStorage.getItem('postList');
-            if (postList == null) {
-                fullData.no = 1000;                                 // 첫번째 글 작성일 때 실행되는 부분
-                var newPostList = [];                               // 새로운 빈 배열을 하나 생성한다.
-                newPostList.unshift(fullData);                      // 배열에 포스트 정보를 삽입한다.
-                var postListStr = JSON.stringify(newPostList);      // 배열 정보를 문자열 형태로 변환한다.
-                localStorage.setItem('postList', postListStr);      // 변환된 문자열을 로컬스토리지(내부)에 저장한다.
-            } else {                                                // 2번째 이후부터 저장할 때 실행되는 부분
-                var prePostList = JSON.parse(postList);             // 기존 저장된 문자열 정보를 본래 형식(배열)로 변환한다.
-                fullData.no = prePostList[0].no + 1;                // 저장되어 있던 가장 마지막 글의 번호보다 1개 더 큰 번호 할당
-                prePostList.unshift(fullData);                      // 기존 저장된 배열에 가장 앞에 새로 작성한 포스트 정보를 저장한다.
-                var postListStr = JSON.stringify(prePostList);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
-                localStorage.setItem('postList', postListStr);      // 변환된 문자열을 다시 로컬 스토리지에 저장한다.
-            }
-
-            alert('저장되었습니다.');
-
-            $('#post-editor').addClass('hidden');
-
+            $.ajax({
+                method: 'POST',
+                url: '/board/add',
+                data: {
+                    'title': title,
+                    'category': category,
+                    'content': content,
+                    'blind': blind,
+                    'notice': notice,
+                }
+            }).done(function (response) {
+                console.log(response);
+                if(response.success == true) {
+                    alert('저장되었습니다.');
+                    $('#post-editor').addClass('hidden');
+                } else {
+                    alert('글 작성에 실패했습니다.');
+                }
+            });
         }
 
         RefreshPostList();
