@@ -188,78 +188,78 @@ $(document).ready(function () {
             const normalList = response.postList;
             const noticeList = response.noticeList;
 
-            
+
             for (var i = 0; i < noticeList.length; i++) {
 
                 var post = noticeList[i];  // 전체 배열에서 i번째 포스트 1개의 데이터를 post라는 변수에 저장한다.
                 // 내 정보(nick)와 게시글의 작성자 정보가 일치(동일)하는가?\
-    
+
                 var postTag;
-    
+
                 var tagHead = `<tr class="text-center ">
                                     <td  class="text-danger">${post.no}</td>`;
                 var tagTail = `<td>${post.datetime}</td>
                                     <td>${post.viewCnt}</td>
                                 </tr>`;
-    
+
                 if (post.blind == true) {
-    
+
                     if (me.nick == post.author) { // true(참), false(거짓)
-    
+
                         postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-    
+
                     } else {
-    
+
                         postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
                     }
-    
+
                 } else {
-    
+
                     postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
                 }
-    
+
                 $('#post-list').append(tagHead + postTag + tagTail);
             }
-    
+
             var skip = (_page - 1) * _limit;
-    
+
             for (var i = skip; (i < normalList.length) && (i < skip + _limit); i++) {
-    
+
                 var post = normalList[i];  // 전체 배열에서 i번째 포스트 1개의 데이터를 post라는 변수에 저장한다.
                 // 내 정보(nick)와 게시글의 작성자 정보가 일치(동일)하는가?\
-    
+
                 var postTag;
-    
+
                 var tagHead = `<tr class="text-center ">
                                     <td  class="text-danger">${post.no}</td>`;
                 var tagTail = `<td>${post.datetime}</td>
                                     <td>${post.viewCnt}</td>
                                 </tr>`;
-    
+
                 if (post.blind == true) {
-    
+
                     if (me.nick == post.author) { // true(참), false(거짓)
-    
+
                         postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-    
+
                     } else {
-    
+
                         postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
                     }
                 } else {
-    
+
                     postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
                 }
-    
+
                 $('#post-list').append(tagHead + postTag + tagTail);
             }
-    
+
             // ㅍㅔ이지 버튼
-    
+
             SetPageButton(normalList);
 
         });
-        
+
     }
 
     $('#summernote').summernote({
@@ -312,7 +312,7 @@ $(document).ready(function () {
                 }
             }).done(function (response) {
                 console.log(response);
-                if(response.success == true) {
+                if (response.success == true) {
                     alert('수정되었습니다.');
                     $('#post-editor').addClass('hidden');
                 } else {
@@ -334,7 +334,7 @@ $(document).ready(function () {
                 }
             }).done(function (response) {
                 console.log(response);
-                if(response.success == true) {
+                if (response.success == true) {
                     alert('저장되었습니다.');
                     $('#post-editor').addClass('hidden');
                 } else {
@@ -428,56 +428,40 @@ $(document).ready(function () {
 
     $('#rd-post-good').click(function () {
 
-        // 1. 
         var no = $('#rd-post-no').attr('no');
 
-        var postList = localStorage.getItem('postList');
-        if (postList == null) {
-            return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
-        }
-
-        var postListArr = JSON.parse(postList);
-
-        for (var i = 0; i < postListArr.length; i++) {
-            if (no == postListArr[i].no) {
-
-                var post = postListArr[i];
-
-                post.good = (post.good || 0) + 1; // post.good++ , post.good += 1;
-
-                $('#rd-post-good-cnt').text(post.good);
-
-                var postListStr = JSON.stringify(postListArr);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
-                localStorage.setItem('postList', postListStr);
+        $.ajax({
+            method : 'POST',
+            url : '/board/good',
+            data : {
+                no : no
             }
-        }
+        }).done(function (response){
+            if(response.success == true) {
+                $('#rd-post-good-cnt').text(response.good); //서버에서  good++ 되서 왔을 것
+            } else {
+                alert(response.msg);
+            }
+        });
     });
 
     $('#rd-post-bad').click(function () {
-
-        // 1. 
+ 
         var no = $('#rd-post-no').attr('no');
 
-        var postList = localStorage.getItem('postList');
-        if (postList == null) {
-            return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
-        }
-
-        var postListArr = JSON.parse(postList);
-
-        for (var i = 0; i < postListArr.length; i++) {
-            if (no == postListArr[i].no) {
-
-                var post = postListArr[i];
-
-                post.bad = (post.bad || 0) + 1; // post.good++ , post.good += 1;
-
-                $('#rd-post-bad-cnt').text(post.bad);
-
-                var postListStr = JSON.stringify(postListArr);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
-                localStorage.setItem('postList', postListStr);
+        $.ajax({
+            method : 'POST',
+            url : '/board/bad',
+            data : {
+                no : no
             }
-        }
+        }).done(function (response){
+            if(response.success == true) {
+                $('#rd-post-bad-cnt').text(response.bad); //서버에서  bad++ 되서 왔을 것
+            } else {
+                alert(response.msg);
+            }
+        });
     });
 
     $('#rd-post-delete').click(function () {
@@ -485,37 +469,54 @@ $(document).ready(function () {
         // 1. 
         var no = $('#rd-post-no').attr('no');
 
-        var postList = localStorage.getItem('postList');
-        if (postList == null) {
-            return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
-        }
-
-        var postListArr = JSON.parse(postList);
-
-        for (var i = 0; i < postListArr.length; i++) {
-            if (no == postListArr[i].no) {
-
-                var post = postListArr[i];
-
-                if (post.author != me.nick) {
-                    alert('자신의 글만 삭제할 수 있습니다.');
-                    return;
-                }
-
-                postListArr.splice(i, 1);
-
-                var postListStr = JSON.stringify(postListArr);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
-                localStorage.setItem('postList', postListStr);
-
-                $('#post-reader').addClass('hidden');
-
-                RefreshPostList();
-
-                alert('삭제 완료되었습니다.');
-
-                return;
+        $.ajax({
+            method: 'DELETE',
+            url: '',
+            data: {
+                no: no
             }
-        }
+        }).done(function (response) {
+            if (response.success == ture) {
+                alert('삭제 완료되었습니다.');
+                $('#post-reader').addClass('hidden');
+            } else {
+                alert('삭제되었거나 이동되어 찾을 수 없습니다.');
+            }
+        });
+
+        RefreshPostList();
+
+        // var postList = localStorage.getItem('postList');
+        // if (postList == null) {
+        //     return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
+        // }
+
+        // var postListArr = JSON.parse(postList);
+
+        // for (var i = 0; i < postListArr.length; i++) {
+        //     if (no == postListArr[i].no) {
+
+        //         var post = postListArr[i];
+
+        //         if (post.author != me.nick) {
+        //             alert('자신의 글만 삭제할 수 있습니다.');
+        //             return;
+        //         }
+
+        //         postListArr.splice(i, 1);
+
+        //         var postListStr = JSON.stringify(postListArr);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
+        //         localStorage.setItem('postList', postListStr);
+
+        //         $('#post-reader').addClass('hidden');
+
+        //         RefreshPostList();
+
+        //         alert('삭제 완료되었습니다.');
+
+        //         return;
+        //     }
+        // }
     });
 
     $('#rd-post-modify').click(function () {
@@ -528,37 +529,56 @@ $(document).ready(function () {
         $('#btn-post-save').text('수정');
         $('#btn-post-save').removeClass('btn-success').addClass('btn-warning');
 
-        var postList = localStorage.getItem('postList');
-        if (postList == null) {
-            return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
-        }
-
-        var postListArr = JSON.parse(postList);
-
-        for (var i = 0; i < postListArr.length; i++) {
-            if (no == postListArr[i].no) {
-
-                var post = postListArr[i];
-
-                if (post.author != me.nick) {
-                    alert('자신의 글만 수정할 수 있습니다.');
-                    return;
-                }
-
-                $('#input-post-title').val(post.title);
-                $('#select-post-category').val(post.category);
-                $('#input-post-author').val(post.author);
-                $('#input-post-secret').val('');
-                $('#summernote').summernote('code', post.content);
-                $('#cb-post-blind').prop('checked', post.blind);
-                $('#cb-post-notice').prop('checked', post.notice);
-
-                $('#post-editor').removeClass('hidden');
-                $('#post-reader').addClass('hidden');
-
-                return;
+        $.ajax({
+            method: 'PUT',
+            url: '',
+            data: {
+                no: no
             }
-        }
+        }).done(function (response) {
+            $('#input-post-title').val(post.title);
+            $('#select-post-category').val(post.category);
+            $('#input-post-author').val(post.author);
+            $('#input-post-secret').val('');
+            $('#summernote').summernote('code', post.content);
+            $('#cb-post-blind').prop('checked', post.blind);
+            $('#cb-post-notice').prop('checked', post.notice);
+
+            $('#post-editor').removeClass('hidden');
+            $('#post-reader').addClass('hidden');
+        });
+
+        // var postList = localStorage.getItem('postList');
+        // if (postList == null) {
+        //     return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
+        // }
+
+        // var postListArr = JSON.parse(postList);
+
+        // for (var i = 0; i < postListArr.length; i++) {
+        //     if (no == postListArr[i].no) {
+
+        //         var post = postListArr[i];
+
+        //         if (post.author != me.nick) {
+        //             alert('자신의 글만 수정할 수 있습니다.');
+        //             return;
+        //         }
+
+        //         $('#input-post-title').val(post.title);
+        //         $('#select-post-category').val(post.category);
+        //         $('#input-post-author').val(post.author);
+        //         $('#input-post-secret').val('');
+        //         $('#summernote').summernote('code', post.content);
+        //         $('#cb-post-blind').prop('checked', post.blind);
+        //         $('#cb-post-notice').prop('checked', post.notice);
+
+        //         $('#post-editor').removeClass('hidden');
+        //         $('#post-reader').addClass('hidden');
+
+        //         return;
+        //     }
+        // }
     });
 
     $('#cb-post-blind').change(function () {
