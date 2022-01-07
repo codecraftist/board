@@ -428,56 +428,40 @@ $(document).ready(function () {
 
     $('#rd-post-good').click(function () {
 
-        // 1. 
         var no = $('#rd-post-no').attr('no');
 
-        var postList = localStorage.getItem('postList');
-        if (postList == null) {
-            return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
-        }
-
-        var postListArr = JSON.parse(postList);
-
-        for (var i = 0; i < postListArr.length; i++) {
-            if (no == postListArr[i].no) {
-
-                var post = postListArr[i];
-
-                post.good = (post.good || 0) + 1; // post.good++ , post.good += 1;
-
-                $('#rd-post-good-cnt').text(post.good);
-
-                var postListStr = JSON.stringify(postListArr);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
-                localStorage.setItem('postList', postListStr);
+        $.ajax({
+            method : 'POST',
+            url : '/board/good',
+            data : {
+                no : no
             }
-        }
+        }).done(function (response){
+            if(response.success == true) {
+                $('#rd-post-good-cnt').text(response.good); //서버에서  good++ 되서 왔을 것
+            } else {
+                alert(response.msg);
+            }
+        });
     });
 
     $('#rd-post-bad').click(function () {
-
-        // 1. 
+ 
         var no = $('#rd-post-no').attr('no');
 
-        var postList = localStorage.getItem('postList');
-        if (postList == null) {
-            return alert('삭제되었거나 이동되어 찾을 수 없습니다.');
-        }
-
-        var postListArr = JSON.parse(postList);
-
-        for (var i = 0; i < postListArr.length; i++) {
-            if (no == postListArr[i].no) {
-
-                var post = postListArr[i];
-
-                post.bad = (post.bad || 0) + 1; // post.good++ , post.good += 1;
-
-                $('#rd-post-bad-cnt').text(post.bad);
-
-                var postListStr = JSON.stringify(postListArr);      // 전체 포스트 정보인 배열을 문자열을 변환한다.
-                localStorage.setItem('postList', postListStr);
+        $.ajax({
+            method : 'POST',
+            url : '/board/bad',
+            data : {
+                no : no
             }
-        }
+        }).done(function (response){
+            if(response.success == true) {
+                $('#rd-post-bad-cnt').text(response.bad); //서버에서  bad++ 되서 왔을 것
+            } else {
+                alert(response.msg);
+            }
+        });
     });
 
     $('#rd-post-delete').click(function () {
