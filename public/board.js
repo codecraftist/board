@@ -202,21 +202,7 @@ $(document).ready(function () {
                                     <td>${post.viewCnt}</td>
                                 </tr>`;
 
-                if (post.blind == true) {
-
-                    if (me.nick == post.author) { // true(참), false(거짓)
-
-                        postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-
-                    } else {
-
-                        postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
-                    }
-
-                } else {
-
-                    postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-                }
+                postTag = `<td class="post-title text-left text-bold" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
 
                 $('#post-list').append(tagHead + postTag + tagTail);
             }
@@ -234,22 +220,9 @@ $(document).ready(function () {
                                     <td  class="text-danger">${post.no}</td>`;
                 var tagTail = `<td>${post.datetime}</td>
                                     <td>${post.viewCnt}</td>
-                                </tr>`;
+                                </tr>`
 
-                if (post.blind == true) {
-
-                    if (me.nick == post.author) { // true(참), false(거짓)
-
-                        postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-
-                    } else {
-
-                        postTag = `<td class="post-title text-left" no="${post.no}"><i>비밀글입니다.</i></td><td>***</td>`;
-                    }
-                } else {
-
-                    postTag = `<td class="post-title text-left ${post.notice ? 'text-bold' : ''}" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
-                }
+                postTag = `<td class="post-title text-left" no="${post.no}">${post.title}</td><td>${post.author}</td>`;
 
                 $('#post-list').append(tagHead + postTag + tagTail);
             }
@@ -431,7 +404,7 @@ $(document).ready(function () {
         var no = $('#rd-post-no').attr('no');
 
         $.ajax({
-            method : 'POST',
+            method : 'PUT',
             url : '/board/good',
             data : {
                 no : no
@@ -450,7 +423,7 @@ $(document).ready(function () {
         var no = $('#rd-post-no').attr('no');
 
         $.ajax({
-            method : 'POST',
+            method : 'PUT',
             url : '/board/bad',
             data : {
                 no : no
@@ -471,20 +444,19 @@ $(document).ready(function () {
 
         $.ajax({
             method: 'DELETE',
-            url: '',
+            url: '/board/delete',
             data: {
                 no: no
             }
         }).done(function (response) {
-            if (response.success == ture) {
+            if (response.success == true) {
                 alert('삭제 완료되었습니다.');
                 $('#post-reader').addClass('hidden');
+                RefreshPostList();
             } else {
                 alert('삭제되었거나 이동되어 찾을 수 없습니다.');
             }
         });
-
-        RefreshPostList();
 
         // var postList = localStorage.getItem('postList');
         // if (postList == null) {
@@ -523,29 +495,35 @@ $(document).ready(function () {
         // 1. 
         var no = $('#rd-post-no').attr('no');
 
-        $('#post-editor').attr('no', no);
-        $('#post-editor').attr('modify', true);
-
-        $('#btn-post-save').text('수정');
-        $('#btn-post-save').removeClass('btn-success').addClass('btn-warning');
-
         $.ajax({
-            method: 'PUT',
-            url: '',
+            method: 'POST',
+            url: '/board/modify-confirm', // 서버에 해당 글의 작성자가 맞는지 확인
             data: {
-                no: no
+                no: no,
             }
         }).done(function (response) {
-            $('#input-post-title').val(post.title);
-            $('#select-post-category').val(post.category);
-            $('#input-post-author').val(post.author);
-            $('#input-post-secret').val('');
-            $('#summernote').summernote('code', post.content);
-            $('#cb-post-blind').prop('checked', post.blind);
-            $('#cb-post-notice').prop('checked', post.notice);
+            if(response.success == true) {
 
-            $('#post-editor').removeClass('hidden');
-            $('#post-reader').addClass('hidden');
+                $('#post-editor').attr('no', no);
+
+                $('#post-editor').attr('modify', true);
+
+                $('#btn-post-save').text('수정');
+                $('#btn-post-save').removeClass('btn-success').addClass('btn-warning');
+
+                $('#input-post-title').val(post.title);
+                $('#select-post-category').val(post.category);
+                $('#input-post-author').val(post.author);
+                $('#input-post-secret').val('');
+                $('#summernote').summernote('code', post.content);
+                $('#cb-post-blind').prop('checked', post.blind);
+                $('#cb-post-notice').prop('checked', post.notice);
+
+                $('#post-editor').removeClass('hidden');
+                $('#post-reader').addClass('hidden');
+            } else {
+                alert('작성자만 수정할 수 있습니다.');
+            }
         });
 
         // var postList = localStorage.getItem('postList');
