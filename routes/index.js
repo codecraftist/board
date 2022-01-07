@@ -487,8 +487,8 @@ router.get('/board/list', async function (req, res, next) {
     const _keyword = req.query.keyword || '';
     const _searchType = req.query.searchType || '';
 
-    const prePostList = await mdb.getAllData('board');
-    const preNoticeList = await mdb.getAllData('notice');
+    const prePostList = await mdb.getAllArrData('board');
+    const preNoticeList = await mdb.getAllArrData('notice');
 
     const normalList = [];
 
@@ -512,22 +512,8 @@ router.get('/board/list', async function (req, res, next) {
         i++;
       }
     } else {
-      // let i = 0;
-      // while (i < prePostList.length) {
-      //   if (prePostList[i][_searchType].includes(_keyword)) {
-      //     if (skip > 0) {
-      //       skip--;
-      //     } else if (cnt < _limit) {
-      //       normalList.push(prePostList[i]);
-      //       cnt++;
-      //     } else {
-      //       break;
-      //     }
-      //   }
-      //   i++;
-      // }
-
-      for(let i in prePostList) {
+      let i = 0;
+      while (i < prePostList.length) {
         if (skip > 0) {
           skip--;
         } else if (cnt < _limit) {
@@ -536,6 +522,7 @@ router.get('/board/list', async function (req, res, next) {
         } else {
           break;
         }
+        i++;
       }
     }
     
@@ -548,6 +535,8 @@ router.get('/board/list', async function (req, res, next) {
     });
 
   } catch (err) {
+
+    console.log(err);
 
     return res.json({
       success: false,
@@ -566,7 +555,7 @@ router.post('/board/add', async function (req, res, next) {
 
     const getNoOp = await mdb.getData('no', 'board');
     if(getNoOp) {
-      no = getNoOP + 1;
+      no = getNoOp + 1;
     }
 
     await mdb.setData('no', 'board', no);
@@ -586,7 +575,7 @@ router.post('/board/add', async function (req, res, next) {
     }
 
     if(post.notice) {
-      const addOp = await mdb.setData('notice', no, post);
+      const addOp = await mdb.setArrData('notice', post);
       if(!addOp) {
         return res.json({
           success: false,
@@ -594,7 +583,7 @@ router.post('/board/add', async function (req, res, next) {
         });
       }
     } else {
-      const addOp = await mdb.setData('board', no, post);
+      const addOp = await mdb.setArrData('board', post);
       if(!addOp) {
         return res.json({
           success: false,
