@@ -90,7 +90,7 @@ $(document).ready(function () {
                     </li>
         */
 
-        var totalCnt = nomalList.length;   // 총 개시글 개수
+        var totalCnt = normalList.length;   // 총 개시글 개수
         _lastPageNum = Math.ceil(totalCnt / _limit); // 마지막 페이지 번호
 
         // _page : 현재 페이지 정보
@@ -183,20 +183,10 @@ $(document).ready(function () {
         }).done(function (response) {
             console.log(response);
 
-            response = {
-                success: true,
-                page: 3,
-                limit: 30,
-                noticeList: [],
-                normalList: []
-            }
-
-            response = {
-                success: false,
-                msg: '로그인이 필요합니다.'
-            }
-
             $('#post-list').empty();
+
+            const normalList = response.postList;
+            const noticeList = response.noticeList;
 
             
             for (var i = 0; i < noticeList.length; i++) {

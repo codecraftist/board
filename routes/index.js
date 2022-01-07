@@ -470,7 +470,7 @@ router.get('/board', function (req, res, next) {
 
 });
 
-router.get('/board', async function (req, res, next) {
+router.get('/board/list', async function (req, res, next) {
 
   try {
 
@@ -512,22 +512,33 @@ router.get('/board', async function (req, res, next) {
         i++;
       }
     } else {
-      let i = 0;
-      while (i < prePostList.length) {
-        if (prePostList[i][_searchType].includes(_keyword)) {
-          if (skip > 0) {
-            skip--;
-          } else if (cnt < _limit) {
-            normalList.push(prePostList[i]);
-            cnt++;
-          } else {
-            break;
-          }
+      // let i = 0;
+      // while (i < prePostList.length) {
+      //   if (prePostList[i][_searchType].includes(_keyword)) {
+      //     if (skip > 0) {
+      //       skip--;
+      //     } else if (cnt < _limit) {
+      //       normalList.push(prePostList[i]);
+      //       cnt++;
+      //     } else {
+      //       break;
+      //     }
+      //   }
+      //   i++;
+      // }
+
+      for(let i in prePostList) {
+        if (skip > 0) {
+          skip--;
+        } else if (cnt < _limit) {
+          normalList.push(prePostList[i]);
+          cnt++;
+        } else {
+          break;
         }
-        i++;
       }
     }
-
+    
     res.json({
       success: true,
       page: _page,
