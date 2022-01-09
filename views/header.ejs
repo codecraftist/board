@@ -9,17 +9,15 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 
             </ul>
-            <span class="navbar-text">
-
-            </span>
-        </div>
-        <div>
-            <% if (login) { %>
-                <a class="btn btn-light btn-sm" href="/info">내 정보</a>
-                <a class="btn btn-light btn-sm" href="/logout">로그아웃</a>
-            <% } else { %>
-                <a class="btn btn-light btn-sm" href="/login">로그인</a>
-            <% } %>
+            <div>
+                <span class="mx-2"><span class="text-primary"><%=uid%></span>님 안녕하세요.</span>
+                <% if (login) { %>
+                    <a class="btn btn-light btn-sm" href="/info">내 정보</a>
+                    <a class="btn btn-light btn-sm" href="/logout">로그아웃</a>
+                <% } else { %>
+                    <a class="btn btn-light btn-sm" href="/">로그인</a>
+                <% } %>
+            </div>
         </div>
     </div>
 </nav>

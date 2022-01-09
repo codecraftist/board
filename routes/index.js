@@ -19,7 +19,8 @@ const USER_TYPE = {
 router.get('/', function(req, res, next) {
 
   res.render('login-page', {
-    login: req.session.login
+    login: req.session.login,
+    uid: req.session.uid
   });
 });
 
@@ -65,15 +66,16 @@ router.post('/login', async function (req, res, next) {
 
 router.get('/logout', function (req, res, next) {
 
-  req.session.login = false;
-
-  res.redirect('/');
+  req.session.destroy((err) => {
+    res.redirect('/');
+  });
 });
 
 router.get('/signup', function (req, res, next) {
 
   res.render('signup-page', {
-    login: req.session.login
+    login: req.session.login,
+    uid: req.session.uid
   });
 });
 
@@ -212,7 +214,8 @@ router.post('/email-verification',async function (req, res, next) {
 router.get('/findAccount', function (req, res, next) {
 
   res.render('findAccount', {
-    login: req.session.login
+    login: req.session.login,
+    uid: req.session.uid
   });
 });
 
@@ -259,14 +262,16 @@ router.get('/info', function (req, res, next) {
   }
 
   res.render('userManagement', {
-    login: req.session.login
+    login: req.session.login,
+    uid: req.session.uid
   });
 });
 
 router.get('/findPassword', function (req, res, next) {
 
   res.render('findPassword', {
-    login: req.session.login
+    login: req.session.login,
+    uid: req.session.uid
   });
 });
 
@@ -406,7 +411,8 @@ router.get('/delete-account', function (req, res) {
   }
 
   res.render('delete-account', {
-    login: req.session.login
+    login: req.session.login,
+    uid: req.session.uid
   });
   
 });
@@ -465,7 +471,8 @@ router.get('/board', function (req, res, next) {
   }
 
   res.render('board', {
-    login: req.session.login
+    login: req.session.login,
+    uid: req.session.uid
   });
 
 });
@@ -473,6 +480,8 @@ router.get('/board', function (req, res, next) {
 router.get('/board/list', async function (req, res, next) {
 
   try {
+
+    const owner = req.session.uid;
 
     const _page = parseInt(req.query.page || 1);
     const _limit = parseInt(req.query.limit || 20);
@@ -487,49 +496,54 @@ router.get('/board/list', async function (req, res, next) {
     const _keyword = req.query.keyword || '';
     const _searchType = req.query.searchType || '';
 
-    const prePostList = await mdb.getAllArrData('board');
     const preNoticeList = await mdb.getAllArrData('notice');
+
+    for(let i = 0; i < preNoticeList.length; i++)
+    {
+      preNoticeList[i].good = preNoticeList[i].good.length;
+      preNoticeList[i].bad = preNoticeList[i].bad.length;
+    }
+
+    const prePostList = await mdb.getAllArrData('board');
 
     const normalList = [];
 
     let skip = (_page - 1) * _limit;
     let cnt = 0;
 
-    if (typeof _keyword == 'string' && _keyword.length > 2) {
+    const onSearch = typeof _keyword == 'string' && _keyword.length > 2;
+    
+    let i = 0;
+    while (i < prePostList.length) {
 
-      let i = 0;
-      while (i < prePostList.length) {
-        if (prePostList[i][_searchType].includes(_keyword)) {
-          if (skip > 0) {
-            skip--;
-          } else if (cnt < _limit) {
-            normalList.push(prePostList[i]);
-            cnt++;
-          } else {
-            break;
-          }
-        }
+      if(onSearch && !prePostList[i][_searchType].includes(_keyword)) {
         i++;
+        continue;
       }
-    } else {
-      let i = 0;
-      while (i < prePostList.length) {
-        if (skip > 0) {
-          skip--;
-        } else if (cnt < _limit) {
-          normalList.push(prePostList[i]);
-          cnt++;
-        } else {
-          break;
+
+      if (skip > 0) {
+        skip--;
+      } else if (cnt < _limit) {
+        prePostList[i].good = prePostList[i].good.length;
+        prePostList[i].bad = prePostList[i].bad.length;
+        if(prePostList[i].blind && prePostList[i].author != owner) {
+          prePostList[i].title = '비밀글입니다.';
+          prePostList[i].author = '***';
+          prePostList[i].secret = true;
         }
-        i++;
+        normalList.push(prePostList[i]);
+        cnt++;
+      } else {
+        break;
       }
+      i++;
     }
     
     res.json({
       success: true,
       page: _page,
       limit: _limit,
+      totalCnt: prePostList.length,
       postList: normalList,
       noticeList: preNoticeList,
     });
@@ -546,8 +560,6 @@ router.get('/board/list', async function (req, res, next) {
 });
 
 router.post('/board/add', async function (req, res, next) {
-
-  console.log(req.body);
 
   try {
 
@@ -569,13 +581,20 @@ router.post('/board/add', async function (req, res, next) {
       blind: req.body.blind == 'true' ? true : false,
       notice: req.body.notice == 'true' ? true : false,
       viewCnt: 0,
-      good: 0,
-      bad: 0,
+      good: [],
+      bad: [],
       datetime: Date.now()
     }
 
+    if(post.blind && post.notice) {
+      return res.json({
+        success: false,
+        msg: '비밀글 옵션과 공지 옵션은 동시에 적용할 수 없습니다.'
+      });
+    }
+
     if(post.notice) {
-      const addOp = await mdb.setArrData('notice', post);
+      const addOp = await mdb.setArrData('notice', post, true);
       if(!addOp) {
         return res.json({
           success: false,
@@ -583,7 +602,7 @@ router.post('/board/add', async function (req, res, next) {
         });
       }
     } else {
-      const addOp = await mdb.setArrData('board', post);
+      const addOp = await mdb.setArrData('board', post, true);
       if(!addOp) {
         return res.json({
           success: false,
@@ -595,6 +614,251 @@ router.post('/board/add', async function (req, res, next) {
     res.json({
       success: true,
       post: post
+    });
+
+  } catch(err) {
+
+    return res.json({
+      success: false,
+      msg: '서버 내부 오류 발생'
+    });
+  }
+
+});
+
+router.put('/board/modify', async function (req, res, next) {
+
+  try {
+    
+    const no = parseInt(req.body.no) || -1;
+    const table = req.body.isNotice == 'true' ? 'notice' : 'board';
+    const owner = req.session.uid;
+
+    const newblind = req.body.blind == 'true' ? true : false;
+    const newnotice = req.body.notice == 'true' ? true : false;
+
+    let allList = await mdb.getAllArrData(table);
+
+    for(let i = 0; i < allList.length; i++) {
+      if(allList[i].no == no) {
+
+        allList[i].title = req.body.title.trim();
+        allList[i].category = req.body.category.trim();
+        allList[i].content = req.body.content.trim();
+        allList[i].blind = newblind;
+
+        if(allList[i].notice != newnotice) {
+
+          await mdb.removeArrData(table, i);
+
+          allList[i].notice = newnotice;
+
+          if(newnotice) {
+            await mdb.setArrData('notice', allList[i], true);
+          } else {
+            await mdb.setArrData('board', allList[i], true);
+          }
+
+        } else {
+          
+          await mdb.updateArrData(table, allList[i], i);
+        }
+
+        return res.json({
+          success: true,
+        });
+      }
+    }
+    
+    res.json({
+      success: false
+    });
+
+  } catch(err) {
+
+    return res.json({
+      success: false,
+      msg: '서버 내부 오류 발생'
+    });
+  }
+
+});
+
+router.get('/board/post', async function (req, res, next) {
+
+  try {
+    
+    const no = parseInt(req.query.no) || -1;
+    const table = req.query.isNotice == 'true' ? 'notice' : 'board';
+    const owner = req.session.uid;
+
+    let allList = await mdb.getAllArrData(table);
+
+    for(let i = 0; i < allList.length; i++) {
+      if(allList[i].no == no) {
+
+        if(allList[i].blind && allList[i].author != owner) {
+          return res.json({
+            success: false,
+            msg: '비밀글은 작성자만 볼 수 있습니다.'
+          });
+        }
+
+        allList[i].viewCnt++;
+        await mdb.updateArrData(table, allList[i], i);
+
+        allList[i].owner = allList[i].author == owner ? true : false;
+
+        allList[i].good = allList[i].good.length;
+        allList[i].bad = allList[i].bad.length;
+
+        return res.json({
+          success: true,
+          post: allList[i]
+        });
+      }
+    }
+    
+    res.json({
+      success: false
+    });
+
+  } catch(err) {
+
+    return res.json({
+      success: false,
+      msg: '서버 내부 오류 발생'
+    });
+  }
+
+});
+
+router.post('/board/modify-confirm', async function (req, res, next) {
+
+  try {
+    
+    const no = parseInt(req.body.no) || -1;
+    const table = req.body.isNotice == 'true' ? 'notice' : 'board';
+    const owner = req.session.uid;
+
+    let allList = await mdb.getAllArrData(table);
+
+    for(let i = 0; i < allList.length; i++) {
+      if(allList[i].no == no) {
+        return res.json({
+          success: allList[i].author == owner ? true : false,
+          post: allList[i]
+        });
+      }
+    }
+    
+    res.json({
+      success: false
+    });
+
+  } catch(err) {
+
+    return res.json({
+      success: false,
+      msg: '서버 내부 오류 발생'
+    });
+  }
+
+});
+
+router.delete('/board/delete', async function (req, res, next) {
+
+  try {
+    
+    const no = parseInt(req.body.no) || -1;
+    const table = req.body.isNotice == 'true' ? 'notice' : 'board';
+    const owner = req.session.uid;
+
+    let allList = await mdb.getAllArrData(table);
+
+    for(let i = 0; i < allList.length; i++) {
+      if(allList[i].no == no && owner == allList[i].author) {
+        await mdb.removeArrData(table, i);
+        return res.json({
+          success: true
+        });
+      }
+    }
+    
+    res.json({
+      success: false
+    });
+
+  } catch(err) {
+
+    return res.json({
+      success: false,
+      msg: '서버 내부 오류 발생'
+    });
+  }
+
+});
+
+router.put('/board/stat', async function (req, res, next) {
+
+  try {
+    
+    const no = parseInt(req.body.no) || -1;
+    const table = req.body.isNotice == 'true' ? 'notice' : 'board';
+    const owner = req.session.uid;
+    const type = req.body.type;
+
+    let allList = await mdb.getAllArrData(table);
+
+    for(let i = 0; i < allList.length; i++) {
+      if(allList[i].no == no) {
+
+        const goodList = allList[i]['good'];
+        const badList = allList[i]['bad'];
+
+        if(type == 'good') {
+          if(goodList.includes(owner)) {
+            return res.json({
+              success: false,
+              msg: '이미 찬성하셨습니다.'
+            });
+          } else {
+            goodList.push(owner);
+            const idx = badList.indexOf(owner);
+            if(idx > -1) {
+              badList.splice(idx, 1);
+            }
+          }
+        }
+        else if(type == 'bad') {
+          if(badList.includes(owner)) {
+            return res.json({
+              success: false,
+              msg: '이미 반대하셨습니다.'
+            });
+          } else {
+            badList.push(owner);
+            const idx = goodList.indexOf(owner);
+            if(idx > -1) {
+              goodList.splice(idx, 1);
+            }
+          }
+        }
+
+        await mdb.updateArrData(table, allList[i], i);
+
+        return res.json({
+          success: true,
+          good: goodList.length,
+          bad: badList.length
+        });
+
+      }
+    }
+    
+    res.json({
+      success: false,
+      msg: '찬성/반대 투표에 실패하였습니다.'
     });
 
   } catch(err) {

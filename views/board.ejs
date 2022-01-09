@@ -1,206 +1,202 @@
 <!doctype html>
 <html lang="ko">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
     <!-- icon library -->
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <!-- summernote editor -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    
+
     <!-- my css files -->
     <link rel="stylesheet" href="/board.css">
 
     <title>게시판</title>
 
-  </head>
-  <body>
+</head>
+
+<body>
 
     <% include header %>
 
-    <!-- 컨텐츠 영역 -->
-    <div class="container space-top-100"> 
+        <!-- 컨텐츠 영역 -->
+        <div class="container space-top-100">
 
-        <div class="board-header">
+            <div class="board-header">
 
-            <h1>게시판</h1>
+                <h1>게시판</h1>
 
-        </div>
-
-        <div class="post-reader hidden" id="post-reader">
-            <div class="post-no">
-                [<span id="rd-post-category"></span>]
-                <span>고정</span>
-                <span id="rd-post-no" no=""></span>
             </div>
-            <div class="post-title">
-                <h1  id="rd-post-title"></h1>
-            </div>
-            <div class="post-info clearfix">
-                <span class="post-author" id="rd-post-author"></span>
-                <span class="post-date" id="rd-post-date"></span>
-                <span class="spacer"></span>
-                <span class="post-viewcnt" id="rd-post-viewcnt"></span>
-            </div>
-            <hr>
-            <div class="post-content" id="rd-post-content"></div>
-            <div class="post-action">
-                <button class="btn btn-sm btn-warning" id="rd-post-modify">수정</button>
-                <button class="btn btn-sm btn-danger" id="rd-post-delete">삭제</button>
-            </div>
-            <hr>
-            <div class="post-stat">
-                <button class="good" id="rd-post-good">Good!(<span id="rd-post-good-cnt"></span>)</button>
-                <button class="bad" id="rd-post-bad">Bad!(<span id="rd-post-bad-cnt"></span>)</button>
-            </div>
-        </div>
 
-        <div class="hidden post mt-5" id="post-editor" no="" modify="">
+            <div class="post-reader hidden" id="post-reader">
+                <div class="post-no">
+                    [<span id="rd-post-category"></span>]
+                    No.<span id="rd-post-no" no=""></span>
+                </div>
+                <div class="post-title">
+                    <h1 id="rd-post-title"></h1>
+                </div>
+                <div class="post-info clearfix">
+                    <span class="post-author" id="rd-post-author"></span>
+                    <span class="post-date" id="rd-post-date"></span>
+                    <span class="spacer"></span>
+                    <span class="post-viewcnt">조회 <span id="rd-post-viewcnt"></span></span>
+                </div>
+                <hr>
+                <div class="post-content" id="rd-post-content"></div>
+                <div class="post-action">
+                    <button class="btn btn-sm btn-warning" id="rd-post-modify">수정</button>
+                    <button class="btn btn-sm btn-danger" id="rd-post-delete">삭제</button>
+                </div>
+                <hr>
+                <div class="post-stat">
+                    <button class="good" id="rd-post-good">Good!(<span id="rd-post-good-cnt"></span>)</button>
+                    <button class="bad" id="rd-post-bad">Bad!(<span id="rd-post-bad-cnt"></span>)</button>
+                </div>
+            </div>
 
-            <div class="post-header post-row">
-                <div class="post-column half post-category">
-                    <div class="post-row bordered">
-                        <div class="post-column label">제목</div>
-                        <div class="post-column content left-border-none">
-                            <input type="text" class="post-input" id="input-post-title">
+            <div class="hidden post mt-5" id="post-editor" no="" modify="">
+
+                <div class="post-header post-row">
+                    <div class="post-column half post-category">
+                        <div class="post-row bordered">
+                            <div class="post-column label">제목</div>
+                            <div class="post-column content left-border-none">
+                                <input type="text" class="post-input" id="input-post-title">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-column half post-title">
+                        <div class="post-row bordered">
+                            <div class="post-column label left-border-none">카테고리</div>
+                            <div class="post-column content left-border-none">
+                                <select class="post-input" name="" id="select-post-category">
+                                    <option value="잡담">잡담</option>
+                                    <option value="질문">질문</option>
+                                    <option value="건의">건의</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="post-column half post-title" >
-                    <div class="post-row bordered">
-                        <div class="post-column label left-border-none">카테고리</div>
-                        <div class="post-column content left-border-none">
-                            <select class="post-input" name="" id="select-post-category">
-                                <option value="잡담">잡담</option>
-                                <option value="질문">질문</option>
-                                <option value="건의">건의</option>
-                            </select>
-                        </div>
+
+                <div class="post-body post-row bordered">
+                    <div class="post-column label">내용</div>
+                    <div class="post-column content left-border-none">
+                        <div id="summernote"></div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="post-info post-row">
-                <div class="post-column half post-author">
-                    <div class="post-row bordered">
-                        <div class="post-column label">글쓴이</div>
-                        <div class="post-column content left-border-none">
-                            <input type="text" class="post-input" id="input-post-author" readonly="true">
-                        </div>
+
+                <div class="post-attachment post-row bordered">
+                    <div class="post-column label">첨부파일</div>
+                    <div class="post-column content left-border-none">
+                        <!-- 첨부파일 디자인 -->
+                        <div class="file-list"></div>
+                        <input type="file" class="post-file">
                     </div>
                 </div>
-                <div class="post-column half post-secret">
-                    <div class="post-row bordered">
-                        <div class="post-column label left-border-none">비밀번호</div>
-                        <div class="post-column content left-border-none">
-                            <input type="password" class="post-input" id="input-post-secret">
-                        </div>
+
+                <div class="post-option post-row bordered last-row">
+                    <div class="post-column label">설정</div>
+                    <div class="post-column content left-border-none">
+
+                        <input type="checkbox" class="option-item" id="cb-post-blind"><label class="option-name"
+                            for="">비밀글</label>
+                        <input type="checkbox" class="option-item" id="cb-post-notice"><label class="option-name"
+                            for="">공지글</label>
+                        <!-- 비밀글: 운영자만 볼 수 있는 글 -->
+                        <!-- 공지: 공지사항으로 등록(최상단에 노출) -->
                     </div>
                 </div>
-            </div>
 
-            <div class="post-body post-row bordered">
-                <div class="post-column label">내용</div>
-                <div class="post-column content left-border-none">
-                    <div id="summernote"></div>
+                <div class="post-action text-center mt-3">
+                    <button class="btn btn-success btn-lg mx-2" id="btn-post-save">저장</button>
+                    <button class="btn btn-outline-danger btn-lg mx-2" id="btn-post-cancel">취소</button>
                 </div>
-            </div>
 
-            <div class="post-attachment post-row bordered">
-                <div class="post-column label">첨부파일</div>
-                <div class="post-column content left-border-none">
-                    <!-- 첨부파일 디자인 -->
-                    <div class="file-list"></div>
-                    <input type="file" class="post-file">
-                </div>
-            </div>
-
-            <div class="post-option post-row bordered last-row">
-                <div class="post-column label">설정</div>
-                <div class="post-column content left-border-none">
-                    
-                    <input type="checkbox" class="option-item" id="cb-post-blind"><label class="option-name" for="">비밀글</label>
-                    <input type="checkbox" class="option-item" id="cb-post-notice"><label class="option-name" for="">공지글</label>
-                    <!-- 비밀글: 운영자만 볼 수 있는 글 -->
-                    <!-- 공지: 공지사항으로 등록(최상단에 노출) -->
-                </div>
-            </div>
-
-            <div class="post-action text-center mt-3">
-                <button class="btn btn-success btn-lg mx-2" id="btn-post-save">저장</button>
-                <button class="btn btn-outline-danger btn-lg mx-2" id="btn-post-cancel">취소</button>
-            </div>
-
-            <!-- 제목
+                <!-- 제목
 
             작성자 이름
 
             비밀번호 -->
 
-            <!-- <div id="summernote"></div> -->
+                <!-- <div id="summernote"></div> -->
 
-            <!-- 첨부파일
+                <!-- 첨부파일
 
             비밀글 옵션 -->
-            
-        </div>
 
-        <div class="board space-top-60">
+            </div>
 
-            <div class="actions clearfix">
-                <!-- 버튼이나 부가적인 기능이 들어갈 위치 -->
-                <button class="btn btn-primary" id="btn-open-editor">글작성</button>
+            <div class="board space-top-60">
 
-                <div class="search-box clearfix">
+                <div class="actions clearfix">
+                    <!-- 버튼이나 부가적인 기능이 들어갈 위치 -->
+                    <button class="btn btn-primary" id="btn-open-editor">글작성</button>
 
-                    <select class="search-type" id="select-search-type">
-                        <option value="title">제목</option>
-                        <option value="content">내용</option>
-                        <option value="author">작성자</option>
-                        <option value="titlecontent">제목+내용</option>
-                    </select>
-                    
-                    <input type="text" class="search-keyword" id="input-search-keyword">
-                    
-                    <button class="search-go" id="btn-search-go">검색</button>
+                    <div class="search-box clearfix">
+
+                        <select class="search-type" id="select-search-type">
+                            <option value="title">제목</option>
+                            <option value="content">내용</option>
+                            <option value="author">작성자</option>
+                            <option value="titlecontent">제목+내용</option>
+                        </select>
+
+                        <input type="text" class="search-keyword" id="input-search-keyword">
+
+                        <button class="search-go" id="btn-search-go">검색</button>
+
+                    </div>
+
+                </div>
+
+                <div class="list space-top-20">
+
+                    <table class="table table-bordered">
+                        <colgroup>
+                            <col style="width:100px">
+                            <col>
+                            <col style="width:140px">
+                            <col style="width:120px">
+                            <col style="width:100px">
+                            <col style="width:100px">
+                            <col style="width:100px">
+                        </colgroup>
+                        <thead>
+                            <tr class="text-center">
+                                <th>No.</th>
+                                <th class="width-long">제목</th>
+                                <th>작성자</th>
+                                <th>일시</th>
+                                <th class="text-primary"><i class="far fa-thumbs-up"></i></th>
+                                <th class="text-danger"><i class="far fa-thumbs-down"></i></th>
+                                <th>조회수</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="post-list">
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
             </div>
 
-            <div class="list space-top-20">
+            <div class="board-page ">
 
-                <table class="table table-bordered">
-
-                    <thead>
-                        <tr class="text-center">
-                            <th>No.</th>
-                            <th>제목</th>
-                            <th>작성자</th>
-                            <th>일시</th>
-                            <th>조회수</th>
-                        </tr>
-                    </thead>
-        
-                    <tbody id="post-list">
-
-                    </tbody>
-        
-                </table>
-
-            </div>
-
-        </div>
-
-        <div class="board-page ">
-
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center" id="pagination">
-                    <!-- <li class="page-item">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!-- <li class="page-item">
                         <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
@@ -213,27 +209,30 @@
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li> -->
-                </ul>
-            </nav>
+                    </ul>
+                </nav>
+
+            </div>
 
         </div>
 
-        <button class="btn btn-sm btn-danger" id="btn-reset">Reset</button>
-
-    </div>
 
 
+        <!-- bootstrap js file -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
+            crossorigin="anonymous"></script>
+        <!-- jquery js file -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <!-- summernote editor -->
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
-    <!-- bootstrap js file -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
-    <!-- jquery js file -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <!-- summernote editor -->
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js" integrity="sha512-tMabqarPtykgDtdtSqCL3uLVM0gS1ZkUAVhRFu1vSEFgvB73niFQWJuvviDyBGBH22Lcau4rHB5p2K2T0Xvr6Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- my js files -->
-    <script src="/board.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"
+            integrity="sha512-tMabqarPtykgDtdtSqCL3uLVM0gS1ZkUAVhRFu1vSEFgvB73niFQWJuvviDyBGBH22Lcau4rHB5p2K2T0Xvr6Q=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- my js files -->
+        <script src="/board.js"></script>
 
-  </body>
+</body>
+
 </html>

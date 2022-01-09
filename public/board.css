@@ -2,6 +2,10 @@
 .container {
 }
 
+.width-long {
+    min-width: 100%;
+}
+
 .text-bold {
     font-weight: bold;
 }

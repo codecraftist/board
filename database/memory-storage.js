@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
+const filePathBase = path.resolve(__dirname, '../datastore');
+
 async function getData (subject, key) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     let fileData;
 
@@ -31,7 +33,7 @@ async function getData (subject, key) {
 
 async function getArrData (subject, index) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     let fileData;
 
@@ -59,7 +61,7 @@ async function getArrData (subject, index) {
 
 async function getAllData(subject) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     try {
 
@@ -83,7 +85,7 @@ async function getAllData(subject) {
 
 async function getAllArrData(subject) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     try {
 
@@ -107,7 +109,7 @@ async function getAllArrData(subject) {
 
 async function setData (subject, key, data) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     let fileData;
 
@@ -148,9 +150,9 @@ async function setData (subject, key, data) {
     return null;
 };
 
-async function setArrData (subject, data) {
+async function setArrData (subject, data, front) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     let fileData;
 
@@ -173,7 +175,54 @@ async function setArrData (subject, data) {
         return null;
     }
 
-    fileData.push(data);
+    if(front) {
+        fileData.unshift(data);
+    } else {
+        fileData.unshift(push);
+    }
+
+    try {
+
+        await fs.promises.writeFile(filePath, JSON.stringify(fileData), {
+            flag: 'w'
+        });
+
+        return true;
+
+    } catch(err) {
+
+        console.log(err);
+    }
+
+    return null;
+};
+
+async function updateArrData (subject, data, index) {
+
+    const filePath = path.resolve(filePathBase, subject);
+
+    let fileData;
+
+    try {
+
+        const data = await fs.promises.readFile(filePath, {
+            flag: 'a+'
+        });
+
+        if(data.length == 0) {
+            fileData = [];
+        } else {
+            fileData = JSON.parse(data.toString());
+        }
+
+    } catch(err) {
+
+        console.log(err);
+
+        return null;
+    }
+
+    fileData[index] = data;
 
     try {
 
@@ -193,7 +242,7 @@ async function setArrData (subject, data) {
 
 async function removeData(subject, key) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     let fileData;
 
@@ -237,7 +286,7 @@ async function removeData(subject, key) {
 
 async function removeArrData(subject, index) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     let fileData;
 
@@ -280,7 +329,7 @@ async function removeArrData(subject, index) {
 
 async function clearSubject(subject) {
 
-    const filePath = path.resolve(__dirname, subject);
+    const filePath = path.resolve(filePathBase, subject);
 
     try {
         await fs.promises.rm(filePath);
@@ -297,6 +346,7 @@ module.exports.getAllData = getAllData;
 module.exports.getAllArrData = getAllArrData;
 module.exports.setData = setData;
 module.exports.setArrData = setArrData;
+module.exports.updateArrData = updateArrData;
 module.exports.removeData = removeData;
 module.exports.removeArrData = removeArrData;
 module.exports.clearSubject = clearSubject;

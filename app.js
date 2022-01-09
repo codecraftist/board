@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
+var NedbStore = require('nedb-session-store')(session);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -18,11 +19,18 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'whiteboardwasblackcard',
   resave: false,
-  saveUninitialized: true,
-  cookie: {  }
-}))
+  saveUninitialized: false,
+  cookie: {
+    path: '/',
+    httpOnly: true,
+    maxAge: 12 * 60 * 60 * 1000   // e.g. 1 year
+  },
+  store: new NedbStore({
+    filename: './datastore/sessions.db'
+  })
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
