@@ -156,8 +156,8 @@
 .join-form .user-menu .menu-group .menu-item > a{
     text-decoration: none;
 }
-a:link{color:#03c75a;}
-a:visited{color:#03c75a;}
+.menu-item > a:link{color:#03c75a;}
+.menu-item > a:visited{color:#03c75a;}
 
 @media screen and (max-width: 600px) {
     .content {
