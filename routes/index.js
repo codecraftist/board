@@ -871,4 +871,20 @@ router.put('/board/stat', async function (req, res, next) {
 
 });
 
+// 페이지 경로
+router.get('/album', function (req, res, next) {
+
+  // 로그인된 유저만 접속하게끔 하는 코드
+  if(!req.session.login) {
+    return res.redirect('/');
+  }
+
+  // 파일 이름 ejs
+  res.render('albumgood', {
+    login: req.session.login,
+    uid: req.session.uid
+  });
+
+});
+
 module.exports = router;
