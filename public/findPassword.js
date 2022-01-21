@@ -21,3 +21,8 @@ $('#btn-email-confirm').click(function (){
     });
    
 });
+
+$('.btn-delete-text').click(function () {
+
+    $(this).siblings('.input-user').val('').focus();
+});
