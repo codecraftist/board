@@ -243,7 +243,8 @@ router.post('/findAccount', async function (req, res, next) {
     }
 
     return res.json({
-      success: false
+      success: false,
+      msg : 'test 아이디찾기 중 이메일이 틀렸을때'
     });
 
   } catch(err) {
