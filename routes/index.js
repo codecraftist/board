@@ -871,4 +871,18 @@ router.put('/board/stat', async function (req, res, next) {
 
 });
 
+router.get('/animation', function (req, res, next) {
+
+  // 로그인이 안되어있으면 로그인 페이지로 이동시킨다.
+  if(!req.session.login) {
+    return res.redirect('/');
+  }
+
+  // 로그인이 되어있으면 아래의 페이지를 전송한다.
+  res.render('animation-page', {
+    login: req.session.login,
+    uid: req.session.uid
+  });
+});
+
 module.exports = router;

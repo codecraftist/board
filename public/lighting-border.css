@@ -1,0 +1,34 @@
+
+.lighting-border {
+    display: inline-block;
+    position: relative;
+    padding: 4px;
+}
+.lighting-border::before,
+.lighting-border::after {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+    border: 4px solid rgba(237, 210, 10, 0.92);
+    visibility: hidden;
+    transition: width .3s, height .3s, visibility .25s;
+}
+.lighting-border::before {
+    left: 0;
+    top: 0;
+    border-right: 0;
+    border-bottom: 0;
+}
+.lighting-border::after {
+    bottom: 0;
+    right: 0;
+    border-left: 0;
+    border-top: 0;
+}
+.lighting-border:hover::before,
+.lighting-border:hover::after {
+    width: 100%;
+    height: 100%;
+    visibility: visible;
+}
