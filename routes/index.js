@@ -872,4 +872,16 @@ router.put('/board/stat', async function (req, res, next) {
 
 });
 
+router.get('/animation', function (req, res, next) {
+  
+  if(!req.session.login) {
+    return res.redirect('/');
+  }
+
+  res.render('animation', {
+    login: req.session.login,
+    uid: req.session.uid
+  });
+});
+
 module.exports = router;
